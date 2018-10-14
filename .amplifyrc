@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "bigdata-20181007141528-authRole",
+            "UnauthRoleArn": "arn:aws:iam::317105563430:role/bigdata-20181007141528-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::317105563430:role/bigdata-20181007141528-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "bigdata-20181007141528-deployment",
+            "UnauthRoleName": "bigdata-20181007141528-unauthRole",
+            "StackName": "bigdata-20181007141528",
+            "StackId": "arn:aws:cloudformation:us-east-1:317105563430:stack/bigdata-20181007141528/f97f1f60-ca5c-11e8-ac03-50fae583dcd2"
+        }
+    }
+}

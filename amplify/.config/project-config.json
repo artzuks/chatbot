@@ -1,0 +1,20 @@
+{
+    "projectName": "bigdata",
+    "projectPath": "C:\\Users\\ZuksArt\\Documents\\CU\\bigdta\\bigdata",
+    "defaultEditor": "code",
+    "frontendHandler": {
+        "javascript": "C:\\Users\\ZuksArt\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "vue",
+        "config": {
+            "SourceDir": "src",
+            "DistributionDir": "dist",
+            "BuildCommand": "npm.cmd run-script build",
+            "StartCommand": "npm.cmd run-script serve"
+        }
+    },
+    "providers": {
+        "awscloudformation": "C:\\Users\\ZuksArt\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-provider-awscloudformation"
+    }
+}
