@@ -8,9 +8,6 @@ Amplify.configure(AWSConfig);
 
 Vue.use(Vuex)
 
-var apigClientFactory = require('aws-api-gateway-client').default;
-
-
 export default new Vuex.Store({
   state: {
     currentCount:0,
@@ -78,9 +75,8 @@ export default new Vuex.Store({
               commit('addMessage',message)
               API.get('chatbotapi', '/chatbot').then(response => {
                   commit ('addMessage',response)
-                  // Add your code here
               }).catch(error => {
-                  console.log(error.response)
+                  commit ('addMessage',{ type: 'text', author: `bot`, data: { text: `Error Calling the backend!` }})
               });
     },
     setAuthState: ({commit},auth) => commit('authState',auth),
