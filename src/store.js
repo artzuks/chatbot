@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Amplify, { API } from 'aws-amplify';
 import {CognitoAuth} from 'amazon-cognito-auth-js';
 import AWSConfig from './aws-exports'
+import Amplify, { API } from "aws-amplify";
+
+Amplify.configure(AWSConfig);
 
 Vue.use(Vuex)
+
+var apigClientFactory = require('aws-api-gateway-client').default;
+
 
 export default new Vuex.Store({
   state: {
@@ -13,8 +18,7 @@ export default new Vuex.Store({
     isOpen:true,
     showFile:true,
     messageList:[
-        { type: 'text', author: `me`, data: { text: `Say yes!` } },
-        { type: 'text', author: `bot`, data: { text: `No.` } }
+        { type: 'text', author: `bot`, data: { text: `Hi, How can I help you?` } }
       ],
     newMessagesCount:0,
     showTypingIndicator:'',
@@ -24,8 +28,8 @@ export default new Vuex.Store({
       ClientId : AWSConfig.aws_user_pools_web_client_id, 
 			AppWebDomain : AWSConfig.aws_cognito_domain,
 			TokenScopesArray : ['email','openid'],
-			RedirectUriSignIn : window.location.href,
-			RedirectUriSignOut : window.location.href,
+			RedirectUriSignIn : window.location.origin,
+			RedirectUriSignOut : window.location.origin,
 			IdentityProvider : '',
       UserPoolId : AWSConfig.aws_user_pools_id, 
       AdvancedSecurityDataCollectionFlag : false
@@ -34,7 +38,8 @@ export default new Vuex.Store({
       idtoken:"",
       acctoken:"",
       reftoken:""
-    }
+    },
+    cognitoSession:{}
   },
   mutations: {
     increment (state) {
@@ -59,6 +64,9 @@ export default new Vuex.Store({
     },
     authTokens (state,auth) {
       state.authTokens = auth;
+    },
+    cognitoSession(state,session){
+      state.cognitoSession = session
     }
 
   },
@@ -68,29 +76,35 @@ export default new Vuex.Store({
     closeChat: ({commit}) => commit('toggleChat',false),
     sendMessage : async ({commit},message) => {
               commit('addMessage',message)
-              let response = await API.get('apib79cd98b','/chatbot/')
-              commit ('addMessage',response)
-            },
+              API.get('chatbotapi', '/chatbot').then(response => {
+                  commit ('addMessage',response)
+                  // Add your code here
+              }).catch(error => {
+                  console.log(error.response)
+              });
+    },
     setAuthState: ({commit},auth) => commit('authState',auth),
     setAuthTokens: ({commit}, session) => {
+
       let authTokens = {
         idtoken:"",
         acctoken:"",
         reftoken:""
       }
       if (session) {
+        commit('cognitoSession',session);
         var idToken = session.getIdToken().getJwtToken();
         if (idToken) {
-          var payload = idToken.split('.')[1];
-          var tokenobj = JSON.parse(atob(payload));
-          var formatted = JSON.stringify(tokenobj, undefined, 2);
+          let payload = idToken.split('.')[1];
+          let tokenobj = JSON.parse(atob(payload));
+          let formatted = JSON.stringify(tokenobj, undefined, 2);
           authTokens.idtoken = formatted;
         }
         var accToken = session.getAccessToken().getJwtToken();
         if (accToken) {
-          var payload = accToken.split('.')[1];
-          var tokenobj = JSON.parse(atob(payload));
-          var formatted = JSON.stringify(tokenobj, undefined, 2);
+          let payload = accToken.split('.')[1];
+          let tokenobj = JSON.parse(atob(payload));
+          let formatted = JSON.stringify(tokenobj, undefined, 2);
           authTokens.acctoken = formatted;
         }
         var refToken = session.getRefreshToken().getToken();

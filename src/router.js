@@ -1,22 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Login from './views/Login.vue'
 
-import { AmplifyEventBus } from 'aws-amplify-vue';
-import Amplify, * as AmplifyModules from 'aws-amplify';
-import { AmplifyPlugin } from 'aws-amplify-vue';
 import Store from './store';
 
 Vue.use(Router)
-Vue.use(AmplifyPlugin, AmplifyModules);
-
-function getUrlParameter(name) {
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\#&]' + name + '=([^&#]*)');
-  var results = regex.exec(location.hash);
-  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
 
 let user = false;
 
@@ -29,14 +17,6 @@ Store.state.cognitoIdentity.userhandler = {
     user = false
     alert("Error!" + err)
   }
-  /** E.g.
-  onSuccess: function(result) {
-    alert("Sign in success");
-    showSignedIn(result);
-  },
-  onFailure: function(err) {
-    alert("Error!" + err);
-  }*/
 };
 
 getUser().then((userr)=> {
@@ -45,38 +25,12 @@ getUser().then((userr)=> {
   }
 })
 
-
-//AmplifyEventBus.$on('authState', async (state) => {
-//  if (state === 'signedOut'){
-//    user = null;
-//    Store.dispatch('setAuthState',null);
-//    router.push({path: '/login'})
-//  } else if (state === 'signedIn') {
-//    user = await getUser();
-//    router.push({path: '/'})
-//  }
-//});
-
 async function getUser(){
   if (user === true){
     return true;
   }
   Store.state.cognitoIdentity.getSession();
   Store.state.cognitoIdentity.parseCognitoWebResponse( window.location.href);
-  //if (Store.getters.authState === true){
-  //  return true
-  //}
-  //Amplify.Auth.setCognitoSession({
-  //    idToken,
-  //    accessToken,
-  //    refreshToken,
-  //    user
-  //}).then(user => {
-  //    console.log(user); // The Cognito user object
-  //});
-
-  //Store.dispatch('setAuthState',getUrlParameter('id_token'));
-  //return Store.getters.authState
 }
 
 
@@ -90,14 +44,6 @@ let router = new Router({
       component: Home,
       meta: {
         requiresAuth:true
-      }
-    },
-    {
-      path:'/login',
-      name: 'login',
-      component: Login,
-      meta: {
-        guest:true
       }
     },
     {

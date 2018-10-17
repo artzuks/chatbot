@@ -9,13 +9,9 @@
 </template>
 
 <script>
-import { components } from 'aws-amplify-vue'
 
 export default {
   name: 'app', 
-  components: {
-    ...components
-  }
 }
 </script>
 

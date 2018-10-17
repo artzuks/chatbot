@@ -9,15 +9,10 @@ const awsmobile =  {
     "aws_user_pools_web_client_id": "46tg1m2f0te02kj6cti350urin",
     "aws_content_delivery_bucket": "bigdata-20181007142038--hostingbucket",
     "aws_content_delivery_bucket_region": "us-east-1",
-    "aws_content_delivery_url": "http://bigdata-20181007142038--hostingbucket.s3-website-us-east-1.amazonaws.com",
+    "aws_content_delivery_url": "https://di6xn6v1ya3hq.cloudfront.net",
     "aws_cloud_logic_custom": [
         {
-            "name": "apid6f4f144",
-            "endpoint": "https://ra9amtiwl2.execute-api.us-east-1.amazonaws.com/Prod",
-            "region": "us-east-1"
-        },
-        {
-            "name": "apib79cd98b",
+            "name": "chatbotapi",
             "endpoint": "https://2v5cw90m3a.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
