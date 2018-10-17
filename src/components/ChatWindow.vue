@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+    <div><p>Token Id: {{authTokens.idtoken}}</p></div>
+    <div><p>Token Acc: {{authTokens.acctoken}}</p></div>
+    <div><p>Token Ref: {{authTokens.reftoken}}</p></div>
     <beautiful-chat
       :participants="participants"
       titleImageUrl='https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'
@@ -29,7 +32,8 @@ export default {
     'isOpen',
     'newMessagesCount',
     'showTypingIndicator',
-    'alwaysScrollToBottom'
+    'alwaysScrollToBottom',
+    'authTokens'
   ]),
   methods: mapActions([
     'increment',

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Amplify, { API } from 'aws-amplify';
+import {CognitoAuth} from 'amazon-cognito-auth-js';
+import AWSConfig from './aws-exports'
 
 Vue.use(Vuex)
 
@@ -17,7 +19,22 @@ export default new Vuex.Store({
     newMessagesCount:0,
     showTypingIndicator:'',
     alwaysScrollToBottom:false,
-    authState: {}
+    authState: false,
+    cognitoIdentity: new CognitoAuth({
+      ClientId : AWSConfig.aws_user_pools_web_client_id, 
+			AppWebDomain : AWSConfig.aws_cognito_domain,
+			TokenScopesArray : ['email','openid'],
+			RedirectUriSignIn : window.location.href,
+			RedirectUriSignOut : window.location.href,
+			IdentityProvider : '',
+      UserPoolId : AWSConfig.aws_user_pools_id, 
+      AdvancedSecurityDataCollectionFlag : false
+    }),
+    authTokens:{
+      idtoken:"",
+      acctoken:"",
+      reftoken:""
+    }
   },
   mutations: {
     increment (state) {
@@ -39,8 +56,10 @@ export default new Vuex.Store({
     },
     authState (state,auth) {
       state.authState = auth;
+    },
+    authTokens (state,auth) {
+      state.authTokens = auth;
     }
-
 
   },
   actions: {
@@ -53,6 +72,34 @@ export default new Vuex.Store({
               commit ('addMessage',response)
             },
     setAuthState: ({commit},auth) => commit('authState',auth),
+    setAuthTokens: ({commit}, session) => {
+      let authTokens = {
+        idtoken:"",
+        acctoken:"",
+        reftoken:""
+      }
+      if (session) {
+        var idToken = session.getIdToken().getJwtToken();
+        if (idToken) {
+          var payload = idToken.split('.')[1];
+          var tokenobj = JSON.parse(atob(payload));
+          var formatted = JSON.stringify(tokenobj, undefined, 2);
+          authTokens.idtoken = formatted;
+        }
+        var accToken = session.getAccessToken().getJwtToken();
+        if (accToken) {
+          var payload = accToken.split('.')[1];
+          var tokenobj = JSON.parse(atob(payload));
+          var formatted = JSON.stringify(tokenobj, undefined, 2);
+          authTokens.acctoken = formatted;
+        }
+        var refToken = session.getRefreshToken().getToken();
+        if (refToken) {
+          authTokens.reftoken = refToken.substring(1, 20);
+        }
+      }
+      commit('authTokens',authTokens);
+    }
   },
   getters : {
     currentCount: state => state.currentCount,
@@ -63,5 +110,7 @@ export default new Vuex.Store({
     showTypingIndicator: state => state.showTypingIndicator,
     alwaysScrollToBottom: state => state.alwaysScrollToBottom,
     authState: state => state.authState,
+    authTokens: state => state.authTokens
+    
   }
 })
