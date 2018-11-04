@@ -11,11 +11,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currentCount:0,
-    participants: [{id:'me',name:"User"},{id:'bot', name:"Bot"}],
+    participants: [{id:'me',name:"User"},{id:'bot', name:"Bot"},{id:'admin', name:"Welcome"}],
     isOpen:true,
     showFile:true,
     messageList:[
-        { type: 'text', author: `bot`, data: { text: `Hi, How can I help you?` } }
+        { type: 'text', author: `admin`, data: { text: `Type a greeting to begin a conversation with the bot.` } }
       ],
     newMessagesCount:0,
     showTypingIndicator:'',
@@ -76,7 +76,7 @@ export default new Vuex.Store({
               API.post('chatbotapi', '/chatbot',{body:{'message':message}}).then(response => {
                   commit ('addMessage',response)
               }).catch(error => {
-                  commit ('addMessage',{ type: 'text', author: `bot`, data: { text: `Error Calling the backend!` }})
+                  commit ('addMessage',{ type: 'text', author: `admin`, data: { text: `Error Calling the backend!` }})
               });
     },
     setAuthState: ({commit},auth) => commit('authState',auth),
