@@ -73,7 +73,7 @@ export default new Vuex.Store({
     closeChat: ({commit}) => commit('toggleChat',false),
     sendMessage : async ({commit},message) => {
               commit('addMessage',message)
-              API.get('chatbotapi', '/chatbot').then(response => {
+              API.post('chatbotapi', '/chatbot',{body:{'message':message}}).then(response => {
                   commit ('addMessage',response)
               }).catch(error => {
                   commit ('addMessage',{ type: 'text', author: `bot`, data: { text: `Error Calling the backend!` }})
